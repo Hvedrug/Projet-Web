@@ -1,0 +1,171 @@
+﻿#Projet_Web utf8_bin
+
+DROP TABLE article;
+DROP TABLE user;
+DROP TABLE commande;
+
+CREATE TABLE article
+(
+	id_article INTEGER(6) NOT NULL AUTO_INCREMENT, 
+	nom VARCHAR(255) NOT NULL, 
+	categorie VARCHAR(255), 
+	quantite INTEGER(6), 
+	prix INTEGER(6),
+	primary key(id_article)
+);
+
+CREATE TABLE user
+(
+	id_user INTEGER(6) NOT NULL AUTO_INCREMENT, 
+	nom VARCHAR(255), 
+	prenom VARCHAR(255), 
+	email VARCHAR(255) UNIQUE,
+	password VARCHAR(255),
+	admin BOOLEAN DEFAULT false,
+	primary key(id_user)
+);
+
+CREATE TABLE commande
+(
+	id_commande INTEGER(6) NOT NULL AUTO_INCREMENT,
+	id_user INTEGER(6) NOT NULL,
+	prix INTEGER(6),
+	nombreArticle INTEGER(6),
+	date DATE,
+	primary key(id_commande),
+	foreign key(id_user) references user(id_user)
+);
+
+
+
+
+/*
+INSERT INTO ... VALUES ... ;
+SELECT ... FROM ... WHERE ... ;
+*/
+
+
+
+#REQUETES SUR ARTICLES
+
+#afficher tous les articles 
+SELECT nom, prix FROM article WHERE (quantite > 0);
+
+#afficher ordonné par nom croissant
+SELECT nom, prix FROM article WHERE (quantite > 0) ORDER BY nom ASC;
+
+#afficher ordonné par nom decroissant
+SELECT nom, prix FROM article WHERE (quantite > 0) ORDER BY nom DESC;
+
+#afficher ordonné par prix croissant
+SELECT nom, prix FROM article WHERE (quantite > 0) ORDER BY prix ASC;
+
+#afficher ordonné par prix decroissant
+SELECT nom, prix FROM article WHERE (quantite > 0) ORDER BY prix DESC;
+
+#afficher categorie
+SELECT nom, prix FROM article WHERE (quantite > 0) && (categorie == ... );
+SELECT nom, prix FROM article WHERE (quantite > 0) AND (categorie == "Livre");
+
+#afficher tranche de prix 
+SELECT nom, prix FROM article WHERE (quantite > 0) && (prix < ...) && (prix >= ...);
+
+#Penser à ne pas afficher plus de 10 elements
+
+
+
+#REQUETES SUR USER
+
+#verifier qu'un n'existe pas déjà
+SELECT email FROM user WHERE (email = "...");
+#On doit vérifier que c'est vide
+
+#ajouter nouvel user si condition précédente vérifiée
+INSERT INTO user(nom, prenom, email, password) VALUES ... ;
+
+#connection 
+SELECT nom, prenom FROM user WHERE (email = "...") && (password = "...");
+
+
+
+#REQUETES SUR USER SI CONNECTE
+
+#recuperer liste des commandes de l'utilisateur
+SELECT contenu, prix, nombreArticle, date FROM commande, user WHERE (user.id_user = commande.id_user) && (user.email = "..." ); 
+#on utilise l'email unique déjà donné par l'utilisateur pendant sa connection
+#mieux que de devoir stocker son id_user
+
+
+
+#REQUETES SUR * SI ADMIN CONNECTE
+
+#ajouter article
+INSERT INTO article(nom, quantite, categorie, prix) VALUES ...;
+
+#changer quantité d'un article
+UPDATE article SET quantite = ... WHERE nom = ...;
+UPDATE article SET quantite = ... WHERE id_article = ...;
+
+#changer prix d'un article
+UPDATE article SET prix = ... WHERE nom = ...;
+UPDATE article SET prix = ... WHERE id_article = ...;
+
+#changer l'ordre d'affichage par défaut
+
+
+
+
+
+#PEUPLEMENT BDD
+
+#TABLE ARTICLE
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('iPhone 11', 12, 'High-Tech', 850);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Samsung S20 Ultra', 5, 'High-Tech', 1550);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Huawei P40', 2, 'High-Tech', 700);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('OnePlus 8 Pro', 6, 'High-Tech', 1100);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Motorola Razr', 1, 'High-Tech', 1400);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Samsung Fold', 1, 'High-Tech', 2300);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Samsung Z Flip', 3, 'High-Tech', 1400);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('iPhone SE', 30, 'High-Tech', 450);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Fondation, Isaac Asimov', 12, 'Livre', 12);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Ghost In The Shell : Masamune Shirow', 5, 'Livre', 8);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Berserk Tome 1 : Kentaro Miura', 12, 'Livre', 7);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('Codex : Leonardo Da Vinci', 1, 'Livre', 127850);
+INSERT INTO article(nom, quantite, categorie, prix) 
+VALUES ('22/11/63 : Stephen King', 4, 'Livre', 22);
+
+#TABLE USER
+#admin
+INSERT INTO user(nom, prenom, email, password, admin) 
+VALUES ('admin', 'admin', 'admin@localhost', 'root', true);
+#user
+INSERT INTO user(nom, prenom, email, password) 
+VALUES ('Dupond', 'Jean', 'Jean.Dupond@gmail.com', '1234');
+INSERT INTO user(nom, prenom, email, password) 
+VALUES ('Markes', 'Natalie', 'Natalie.Markes@gmail.com', 'natnatM');
+INSERT INTO user(nom, prenom, email, password) 
+VALUES ('Gros', 'Baptiste', 'Baptiste.Gros@gmail.com', '0000');
+INSERT INTO user(nom, prenom, email, password) 
+VALUES ('Philippe', 'Edward', 'Edward.Philippe@gmail.com', 'PMFRANCE');
+
+#TABLE COMMANDE
+INSERT INTO commande(id_user, prix, nombreArticle, date) 
+VALUES (1, 10, 3, '2019-12-23');
+INSERT INTO commande(id_user, prix, nombreArticle, date) 
+VALUES (2, 50, 1, '2019-01-02');
+INSERT INTO commande(id_user, prix, nombreArticle, date) 
+VALUES (2, 10, 1, '2019-10-15');
+INSERT INTO commande(id_user, prix, nombreArticle, date) 
+VALUES (4, 1060, 40, '2020-03-27');
